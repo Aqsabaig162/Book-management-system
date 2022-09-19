@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link , useNavigate } from 'react-router-dom';
+import { Link , useNavigate, useResolvedPath } from 'react-router-dom';
 import './login.css'
 import { useState } from "react";
 import { auth } from './firebase'
@@ -10,26 +10,35 @@ function Loginsignup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
- 
-  const signIn = e => {
+
+
+  const signIn = async (e) => {
     e.preventDefault();
-    auth.signInWithEmailAndPassword(email, password)
-    .then(auth => {
-      navigate('/header');
-    })
-    .catch(error => alert(error.message))
+   try{
+    const  resp = await auth.signInWithEmailAndPassword(email, password)
+    if(useResolvedPath)
+      navigate('/header')
+   } 
+   catch(error){
+    alert(error.message)
+   }
   }
-const register = e =>{
+
+   
+const register =async e =>{
   e.preventDefault();
-  auth.createUserWithEmailAndPassword(email, password)
-  .then((auth) => {
+  try{
+  const resp = auth.createUserWithEmailAndPassword(email, password)
+ if (resp)  {
     console.log(auth);
-    
     if(auth) {
       navigate('/');
     }
-  })
-  .catch(error => alert(error.message))
+  }
+}
+  catch(error){
+    alert(error.message)
+  }
 
   //fancy firebase register
 }
