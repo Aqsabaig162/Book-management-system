@@ -7,7 +7,7 @@ import { auth } from "./firebase";
 function Header() {
   const dispatch = useDispatch();
   const signoutt = async (e) => {
-    debugger;
+    
     e.preventDefault();
     localStorage.clear();
     auth.signOut();
