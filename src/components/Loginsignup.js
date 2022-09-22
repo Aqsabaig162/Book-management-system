@@ -1,29 +1,39 @@
 import React from 'react'
-import { Link , useNavigate, useResolvedPath } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './login.css'
 import { useState } from "react";
 import { auth } from './firebase'
+import { useDispatch} from 'react-redux'
+import { signin } from '../Redux/actions/signin'
 
 function Loginsignup() {
+  const dispatch = useDispatch()
   const navigate = useNavigate();
+  
      // States for registration
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-
   const signIn = async (e) => {
     e.preventDefault();
    try{
     const  resp = await auth.signInWithEmailAndPassword(email, password)
-    if(useResolvedPath)
-      navigate('/header')
+    
+    if(resp)
+       console.log(resp);
+       const key = resp.user._delegate.accessToken
+       console.log(key)
+       localStorage.setItem('Jwt', key)
+       
+      // 
+      dispatch(signin());
+      
    } 
    catch(error){
     alert(error.message)
    }
   }
-
    
 const register =async e =>{
   e.preventDefault();
@@ -33,6 +43,7 @@ const register =async e =>{
     console.log(auth);
     if(auth) {
       navigate('/');
+     
     }
   }
 }
